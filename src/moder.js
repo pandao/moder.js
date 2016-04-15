@@ -138,13 +138,13 @@
     function loader(id, callback, onerror) {
         var url,
             queue = map.loading[id] || (map.loading[id] = [])
-            res   = map.res[id] || map.res[id + ext] || {},
+            res   = map.res[id]     || map.res[id + ext]      || {},
             pkg   = res.pkg;
 
         queue.push(callback);
 
         if (pkg) {
-            url = map.pkg[pkg].url || map.pkg[pkg].uri;
+            url = map.pkg[pkg].url   || map.pkg[pkg].uri;
         } else {
             url = res.url || res.uri || id;
         }
