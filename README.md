@@ -12,6 +12,12 @@ Front-end AMD/CMD/CommonJS Module (locale) Loader.
 - 支持模块包和加载 CSS 模块文件；
 - 特别适用于移动端项目；
 
+### 安装
+
+```shell
+$ bower install moder.js --save
+```
+
 ### 使用方法
 
 1、设置模块资源地图
