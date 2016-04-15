@@ -1,8 +1,8 @@
 # moder.js
 
-Front-end AMD/CMD/CommodJS Module (locale) Loader. 
+Front-end AMD/CMD/CommonJS Module (locale) Loader. 
 
-前端（AMD/CMD/CommodJS）（本地）模块加载解决方案
+前端（AMD/CMD/CommonJS）（本地）模块加载解决方案
 
 ### 简介
 

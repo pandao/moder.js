@@ -1,6 +1,6 @@
 {
   "name": "moder.js",
-  "description": "Front-end AMD/CMD/CommodJS Module (locale) Loader.",
+  "description": "Front-end AMD/CMD/CommonJS Module (locale) Loader.",
   "main": "index.js",
   "authors": [
     "Pandao"

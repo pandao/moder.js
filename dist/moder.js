@@ -2,7 +2,7 @@
  * moder.js v0.1.0
  *
  * @file        moder.js 
- * @description Front-end AMD/CMD/CommodJS Module (locale) Loader. 
+ * @description Front-end AMD/CMD/CommonJS Module (locale) Loader. 
  * @license     MIT License
  * @author      Pandao
  * {@link       https://github.com/pandao/moder.js}
