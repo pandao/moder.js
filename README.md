@@ -82,7 +82,8 @@ define("模块名", function(require, exports, module){
 require.saveToLocalStorage = false; // 默认为 true
 ```
 
-> 本地存储后如何动态更新？只要模块文件的 URL 有变动，就会自动更新本地存储。所以每个模块都要定义 URL。
+> **本地存储后如何动态更新？**
+> 只要模块文件的 URL 有变动，就会自动更新本地存储。所以每个模块都要定义 URL。
 
 ### 辅助构建工具
 
