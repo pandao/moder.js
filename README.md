@@ -38,7 +38,7 @@ require.map({
         // CSS 模块文件
         'css/test' : {
             url : 'css/test.css', // CSS 必须加上扩展名 .css
-            deps: ['css/dep']     // CSS 模块定义依赖无效
+            deps: ['css/dep']     // CSS 模块定义依赖
         },
         '包A模块1': {
             pkg: '包名A', // 所属包
