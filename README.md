@@ -71,6 +71,10 @@ require.async(['模块A'], function(mod) {
     console.log(mod);
 });
 
+require(['模块1', '模块2'], function(m1, m2) {
+    console.log(m1, m2);
+});
+
 // 模块文件内使用
 define("模块名", function(require, exports, module){
     var mod = require('某个依赖模块');
