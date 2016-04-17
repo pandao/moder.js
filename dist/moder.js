@@ -1,5 +1,5 @@
 /*
- * moder.js v0.2.0
+ * moder.js v0.2.1
  *
  * @file        moder.js 
  * @description Front-end Module (locale) Loader. 
@@ -61,15 +61,19 @@ var require, define;
         return /\.css$/.test(url);
     }
 
-    var cssMap     = {},
-        resMap     = {},
-        pkgMap     = {},
-        loadingMap = {},
-        factoryMap = {},
-        modulesMap = {},
-        scriptsMap = {},
-        logPrefix  = "[Moder.js]",
-        head       = document.getElementsByTagName('head')[0];
+    var cssMap      = {},
+        resMap      = {},
+        pkgMap      = {},
+        loadingMap  = {},
+        factoryMap  = {},
+        modulesMap  = {},
+        scriptsMap  = {},
+        logPrefix   = "[Moder.js]",
+        localPrefix = '',             // 本地存储模块名 ID 的前缀，为了避免同名 Key 造成数据不对称
+                                      // 需在未加载任何模块前设置
+                                      // 慎用或不随意变动，如果有变动，必须执行 localStorage.clear() 方法，
+                                      // 否则会造成旧模块 ID Key 占用额外本地存储空间，无法同步更新
+        head        = document.getElementsByTagName('head')[0];
 
     /**
      * 通过 Ajax 或 LocalStorage 加载，获取模块文件内容
@@ -89,8 +93,8 @@ var require, define;
         scriptsMap[url] = true;
 
         if ((content = store.getItem(url))) {
-            if (!store.getItem(id)) {
-                store.setItem(id, url);
+            if (!store.getItem(localPrefix + id)) {
+                store.setItem(localPrefix + id, url);
             }
 
             callback(content);
@@ -109,7 +113,7 @@ var require, define;
                         content = xhr.responseText;
                         
                         store.setItem(url, content);
-                        store.setItem(id, url);
+                        store.setItem(localPrefix + id, url);
 
                         callback(content);
                     } else {
@@ -253,7 +257,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '1.0.0'
+        version : '0.2.1'
     };
     
     /**
@@ -451,5 +455,11 @@ var require, define;
      */
 
     require.saveToLocalStorage = true;
+    
+    /**
+     * 本地存储模块名 ID Key 前缀，默认为空，该设置需在未加载任何模块前设置
+     */
+
+    require.localPrefix = localPrefix;
 
 })(this);
