@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="imagemode" content="force">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="white">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0">
+        <title>Moder.js Examples</title>
+        <meta name="keywords" content="moder.js">
+        <meta name="description" content="Moder.js">
+        <style>
+            *{margin:0;padding:0;}
+            body{padding:20px;line-height: 1.6;}
+            #btn{padding: 6px 10px;}
+        </style>
+    </head>
+    <body>
+        <div id="loading">加载中...</div>
+        <div id="layout">
+            <button onclick="location.reload(true);" id="btn">刷新</button>
+            <h1>Hello World!</h1>
+            <p>所有的模块都必须在模块 Map 中定义</p>
+        </div>
+        <div id="time"></div>
+        <script src="../dist/moder.js"></script>
+        <script>
+            window.moduleMap = {
+                "pkg" : {
+                    "tools" : {
+                        url : 'js/pkg/tools.js'
+                    }
+                },
+                "res" : {
+                    "tools/a" : {
+                        pkg : 'tools',
+                    },
+                    "tools/b" : {
+                        pkg : 'tools',
+                        deps : ['tools/a']
+                    },
+                    "tools/c" : {
+                        pkg : 'tools',
+                        deps : ['tools/b']
+                    },
+                    "fastclick" : {
+                        "url" : "js/fastclick_255287a1.js"
+                    },
+                    "hammer" : {
+                        "url" : "js/hammer_8a7ff64e.js"
+                    },
+                    "main" : {
+                        "deps":["zepto","vue/vue","hammer","fastclick"],
+                        "url" : "js/main_ff013aea.js"
+                    },
+                    "vue.full" : {
+                        "deps":[
+                            "vue/vue",
+                            "vue/router",
+                            "vue/resource",
+                            "vue/component.robot",
+                            "hammer",
+                            "vue/touch",
+                            "vue/validator"
+                        ],
+                        "url" : "js/vue.full_08ae046a.js"
+                    },
+                    "vuex" : {
+                        "url" : "js/vuex_6011babb.js"
+                    },
+                    "page/cart" : {
+                        deps : ['vue/vue'],
+                        "url" : "js/page/cart_fcf9e64e_new.js"
+                    },
+                    "component/bar" : {
+                        "url" : "js/component/bar_b0ccaf26.js"
+                    },
+                    "component/test" : {
+                        "url" : "js/component/test_35947fa9.js"
+                    },
+                    "vue/component.robot" : {
+                        "url" : "js/vue/component.robot_62d22637.js"
+                    },
+                    "vue/resource" : {
+                        "url" : "js/vue/resource_2acf0456.js"
+                    },
+                    "vue/router" : {
+                        "url" : "js/vue/router_e4497334.js"
+                    },
+                    "vue/touch" : {
+                        "deps" : ["hammer"],
+                        "url" : "js/vue/touch_487c682b.js"
+                    },
+                    "vue/validator" : {
+                        "url" : "js/vue/validator_20c98974.js"
+                    },
+                    "vue/vue" : {
+                        "url" : "js/vue/vue_b6da2f19.js"
+                    },
+                    "zepto" : {
+                        "url" : "js/zepto.min.js"
+                    },
+                    "cart" : {
+                        deps : ['page/cart']
+                    },
+                    "css/global" : {
+                        url : 'css/global.css',
+                        deps : ['css/dep'] // CSS 模块的依赖暂不支持按顺序加载
+                    },
+                    "css/dep" : {
+                        url : 'css/dep.css'
+                    }
+                }
+            };
+            
+            require.map(moduleMap);
+            
+            // 加载 CSS 模块
+            require.async('css/global', function(m){
+                // 暂不支持加载 CSS 模块后的回调处理，请用以下方式
+                /*require.loadCSS({
+                    url : 'css/global.css'
+                }, function(){
+
+                });*/
+            });
+            
+            // 行内 define
+            define("cart", function(require, exports, module){
+                module.exports = require('page/cart');
+            });
+            
+            // 加载一个包模块，只要请求包中的某一个模块就可以了
+            require.async('tools/b', function(m){
+                console.info("加载一个包模块 pkg => tools loaded =>", m);
+            });
+            
+            require.preload('./js/preload.js', function(){
+                console.info('require.preload()');
+            });
+            
+            require.load(['hammer', 'zepto'], function(Hammer, $){
+                console.log("Hammer loaded =>", Hammer.on, $);
+                console.log("Zepto loaded =>", Zepto, $);
+            
+                require.async(['vue.full', 'fastclick', 'cart'], function(Vue, m, cart){
+                    console.log("vue.full loaded =>", Vue, $);
+                    console.log("fastclick loaded =>", m);
+                    console.log("cart =>", cart);
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,4 +1,6 @@
-(function(window) {
+var require, define;
+
+(function(global) {
     // 避免重复加载而导致已定义模块丢失
     if (window.require) {
         return ;
@@ -27,17 +29,6 @@
     }
     
     /**
-     * 获取模块（别）名
-     * 
-     * @param  {String}  id    模块 ID
-     * @return {String}  str   返回别名
-     */
-
-    function alias(id) {
-        return id.replace(/\.js$/i, '');
-    }
-    
-    /**
      * 判断是否为 JS 文件
      * 
      * @param  {String}   url   模块 URL 地址
@@ -58,21 +49,16 @@
     function isCSSFile(url) {
         return /\.css$/.test(url);
     }
-    
-    var ext       = ".js",
-        logPrefix = '[Moder.js]',
-        head      = document.getElementsByTagName('head')[0],
-        // 资源集合对象
-        map       = {
-            css     : {},
-            pkg     : {},
-            res     : {},
-            deps    : {},
-            factory : {},
-            modules : {},
-            loading : {},
-            scripts : {}
-        };
+
+    var cssMap     = {},
+        resMap     = {},
+        pkgMap     = {},
+        loadingMap = {},
+        factoryMap = {},
+        modulesMap = {},
+        scriptsMap = {},
+        logPrefix  = "[Moder.js]",
+        head       = document.getElementsByTagName('head')[0];
 
     /**
      * 通过 Ajax 或 LocalStorage 加载，获取模块文件内容
@@ -81,20 +67,17 @@
      * @param  {String}    url       模块文件地址
      * @param  {Function}  callback  加载完成后的回调处理函数
      * @return {Void}      void      无返回值
-     */ 
+     */
 
     function ajaxLoader(id, url, callback) {
-        
-        if (map.scripts[url]) return ;
-        
-        if (!(url in map.scripts))  {
-            map.scripts[url] = true;
-        }
-        
-        var store   = window.localStorage,
-            content = store.getItem(url);
+        if (url in scriptsMap) return ;
 
-        if (content) {
+        var content,
+            store = localStorage;
+        
+        scriptsMap[url] = true;
+
+        if ((content = store.getItem(url))) {
             if (!store.getItem(id)) {
                 store.setItem(id, url);
             }
@@ -103,84 +86,29 @@
         } else {
             var xhr = new XMLHttpRequest();
 
-            xhr.addEventListener("load", function() {
-                if (xhr.status === 200) {
-                    var oldURL = store.getItem(id);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 ) {
+                    if (xhr.status === 200) {
+                        var oldUrl = store.getItem(id);
 
-                    if (oldURL) {
-                        store.removeItem(oldURL);
+                        if (oldUrl) {
+                            store.removeItem(oldUrl);
+                        }
+                        
+                        content = xhr.responseText;
+                        
+                        store.setItem(url, content);
+                        store.setItem(id, url);
+
+                        callback(content);
+                    } else {
+                        throw new Error(logPrefix + ' A unkown error occurred at ' + id);
                     }
-
-                    content = xhr.responseText;
-                    store.setItem(url, content);
-                    store.setItem(id, url);
-
-                    callback(content);
-                } else {
-                    throw new Error(logPrefix + ' _load() `' + url + '` not found.');
                 }
-            }, false);
+            };
 
-            xhr.open('get', url);
+            xhr.open("get", url);
             xhr.send(null);
-        }
-    }
-
-    /**
-     * 模块文件加载器
-     * 
-     * @param  {String}    id        模块 ID
-     * @param  {Function}  callback  加载完成后的回调处理函数
-     * @param  {Function}  onerror   加载失败或错误后的回调处理函数
-     * @return {Void}      void      无返回值
-     */ 
-
-    function loader(id, callback, onerror) {
-        var url,
-            queue = map.loading[id] || (map.loading[id] = [])
-            res   = map.res[id]     || map.res[id + ext]      || {},
-            pkg   = res.pkg;
-
-        queue.push(callback);
-
-        if (pkg) {
-            url = map.pkg[pkg].url   || map.pkg[pkg].uri;
-        } else {
-            url = res.url || res.uri || id;
-        }
-
-        // 没有扩展名时加上 .js，并约定 CSS 文件必须加上 .css 扩展名
-        if (!isJSFile(url) && !isCSSFile(url)) {
-            url += ext;
-        }
-        
-        if (require.saveToLocalStorage) {
-            ajaxLoader(id, url, function(content) {
-                if (isCSSFile(url)) {
-                    if (map.css[url]) return ;
-
-                    map.css[url] = true;
-                
-                    loadCSS({content : content});
-
-                    return ;
-                }
-
-                script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.setAttribute("data-module", id);
-                script.innerHTML = content;
-                head.appendChild(script);
-            });
-        } else {
-            if (isCSSFile(url)) {
-                loadCSS({url : url});
-                return ;
-            }
-
-            loadScript(url, onerror && function () {
-                onerror(id);
-            });
         }
     }
 
@@ -193,31 +121,31 @@
      */ 
 
     function loadScript(url, onerror) {
-        if (url in map.scripts) {
-            return ;
-        }
+        if (url in scriptsMap) return ;
 
-        map.scripts[url] = true;
+        scriptsMap[url] = true;
 
         var script = document.createElement('script');
-
+        
         if (onerror) {
             var tid = setTimeout(onerror, require.timeout);
 
-            script.onerror = function () {
+            script.onerror = function (e) {
                 clearTimeout(tid);
-                onerror();
+                onerror(e);
             };
 
             var onload = function () {
                 clearTimeout(tid);
+                onerror();
             };
 
             if ('onload' in script) {
                 script.onload = onload;
             } else {
                 script.onreadystatechange = function () {
-                    if (this.readyState === 'loaded' || this.readyState === 'complete') {
+                    if (this.readyState === 'loaded' || 
+                        this.readyState === 'complete') {
                         onload();
                     }
                 };
@@ -232,34 +160,57 @@
     }
 
     /**
-     * 加载 CSS 样式文件
+     * 模块文件加载器
      * 
-     * @param  {Object}    config    加载配置
+     * @param  {String}    id        模块 ID
+     * @param  {Function}  callback  加载完成后的回调处理函数
+     * @param  {Function}  onerror   加载失败或错误后的回调处理函数
      * @return {Void}      void      无返回值
      */ 
 
-    function loadCSS(config) {
-        if (config.content) {
-            var style  = document.createElement('style');
-            style.type = 'text/css';
+    function loader(id, callback, onerror) {
+        var queue = loadingMap[id] || (loadingMap[id] = []);
 
-            if (style.styleSheet) { // IE
-                style.styleSheet.cssText = config.content;
-            } else {
-                style.innerHTML = config.content;
+        queue.push(callback);
+
+        var url,
+            res = resMap[id] || {},
+            pkg = res.pkg;
+
+        if (pkg) {
+            url = pkgMap[pkg].url;
+        } else {
+            url = res.url || id;
+        }
+
+        if (require.saveToLocalStorage)
+        {
+            ajaxLoader(id, url, function(content) {
+                if (isCSSFile(url)) {
+                    if (cssMap[url]) return ;
+
+                    cssMap[url] = true;
+                
+                    require.loadCSS({content : content});
+                    return ;
+                }
+                
+                script = document.createElement('script');
+                script.type      = 'text/javascript';
+                script.innerHTML = content;
+                head.appendChild(script);
+            });
+        } 
+        else
+        {
+            if (isCSSFile(url)) {
+                require.loadCSS({url : url});
+                return ;
             }
 
-            head.appendChild(style);
-        } else if (config.url) {
-            if (map.css[config.url]) return ;
-
-            map.css[config.url] = true;
-
-            var link = document.createElement('link');
-            link.href = config.url;
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            head.appendChild(link);
+            loadScript(url, onerror && function() {
+                onerror(id);
+            });
         }
     }
     
@@ -271,20 +222,28 @@
      * @return {Void}      void      无返回值
      */
 
-    function define(id, factory) {
-        id = alias(id);
-        map.factory[id] = factory;
+    define = function(id, factory) {
+        factoryMap[id] = factory;
 
-        var queue = map.loading[id];
+        var queue = loadingMap[id];
 
         if (queue) {
-            for (var i = 0, n = queue.length; i < n; i++) {
+            for(var i = 0, n = queue.length; i < n; i++) {
                 queue[i]();
             }
 
-            delete map.loading[id];
+            delete loadingMap[id];
         }
-    }
+    };
+    
+    /**
+     * AMD 规范标识对象
+     */
+
+    define.amd = {
+        jQuery  : true,
+        version : '1.0.0'
+    };
     
     /**
      * 请求模块方法
@@ -292,79 +251,83 @@
      * @param  {String|Array}    id        请求的模块 ID 或模块 ID 数组
      * @return {Mixed}           mixed     返回模块
      */
-    
-    function require(id) {
-        if (id && id.join) {
+
+    require = function(id) {
+        if (id && id.splice) {
             return require.async.apply(this, arguments);
         }
 
-        id = alias(id);
-
-        var module = map.modules[id];
+        var module = modulesMap[id];
 
         if (module) {
             return module.exports;
         }
 
-        var factory = map.factory[id];
+        var factory = factoryMap[id];
 
         if (!factory) {
             throw new Error(logPrefix + ' Cannot find module `' + id + '`');
         }
 
-        module = map.modules[id] = {
+        module = modulesMap[id] = {
             exports: {}
         };
 
-        var m = isFunction(factory) ? factory.apply(module, [require, module.exports, module]) : factory;
+        var ret = isFunction(factory) ? factory.apply(module, [require, module.exports, module]) 
+                                      : factory;
 
-        return m ? m : module.exports;
-    }
+        if (ret) {
+            module.exports = ret;
+        }
+        
+        return module.exports;
+    };
     
     /**
      * 同步请求模块方法
      * 
-     * @param  {String|Array}    modules   请求的模块 ID 或模块 ID 数组
+     * @param  {String|Array}    names     请求的模块 ID 或模块 ID 数组
      * @param  {Function}        onload    加载成功后的回调处理函数
      * @param  {Function}        onerror   加载失败或出错后的回调处理函数
      * @return {Mixed}           mixed     返回模块
      */
-    
-    require.async = function (modules, onload, onerror) {
-        onload = onload || function() {};
 
-        if (isString(modules)) {
-            modules = [modules];
+    require.load = require.async = function(names, onload, onerror) {
+        if (isString(names)) {
+            names = [names];
         }
 
         var needMap = {}, needNum = 0;
 
         function findNeed(depArr) {
+            
             var child;
 
             for (var i = 0, n = depArr.length; i < n; i++) {
-                var dep = alias(depArr[i]);
+                //
+                // skip loading or loaded
+                //
+                var dep = depArr[i];
 
                 if (dep in needMap) {
                     continue;
                 }
 
-                if (dep in map.factory) {
-                    child = map.res[dep] || map.res[dep + ext];
-
+                needMap[dep] = true;
+                
+                if (dep in factoryMap) {
+                    // check whether loaded resource's deps is loaded or not
+                    child = resMap[dep] || resMap[dep + '.js'];
                     if (child && 'deps' in child) {
                         findNeed(child.deps);
                     }
-
                     continue;
                 }
-
-                needMap[dep] = true;
+                
                 needNum++;
                 loader(dep, updateNeed, onerror);
 
-                child = map.res[dep] || map.res[dep + ext];
-
+                child = resMap[dep] || resMap[dep + '.js'];
                 if (child && 'deps' in child) {
                     findNeed(child.deps);
                 }
@@ -372,18 +335,18 @@
         }
 
         function updateNeed() {
-            if (0 === needNum--) {
+            if (0 == needNum--) {
                 var args = [];
 
-                for (var i = 0, n = modules.length; i < n; i++) {
-                    args[i] = require(modules[i]);
+                for(var i = 0, n = names.length; i < n; i++) {
+                    args[i] = require(names[i]);
                 }
 
-                onload && onload.apply(window, args);
+                onload && onload.apply(global, args);
             }
         }
-
-        findNeed(modules);
+        
+        findNeed(names);
         updateNeed();
     };
     
@@ -394,18 +357,14 @@
      * @return {Void}            void    无返回值
      */
 
-    require.map = function (obj) {
+    require.map = function(obj) {
         var key, col;
-        
-        if (isString(obj)) {
-            obj = JSON.parse(obj);
-        }
 
         col = obj.res;
 
         for (key in col) {
             if (col.hasOwnProperty(key)) {
-                map.res[key] = col[key];
+                resMap[key] = col[key];
             }
         }
 
@@ -413,53 +372,73 @@
 
         for (key in col) {
             if (col.hasOwnProperty(key)) {
-                map.pkg[key] = col[key];
+                pkgMap[key] = col[key];
             }
         }
     };
 
     /**
-     * Ajax 请求超时时间，单位毫秒
-     */
+     * 加载脚本文件（别名）
+     * 
+     * @param  {String}      url       模块文件 URL
+     * @param  {Function}    onerror   加载失败或错误后的回调处理函数
+     * @return {HTMLElement} script    返回 Script 元素对象
+     */ 
+
+    require.preload = require.loadJS = require.loadScript = loadScript;
+
+    /**
+     * 加载 CSS 样式文件
+     * 
+     * @param  {Object}     config    加载配置
+     * @param  {Function}   callback  加载成功后的回调处理函数
+     * @return {Void}       void      无返回值
+     */ 
+
+    require.loadCSS = function(config, callback) {
+        callback = callback || function() {};
+
+        if (config.content) {
+            var style  = document.createElement('style');
+            style.type = 'text/css';
+            
+            if (style.styleSheet) { // for IE
+                style.styleSheet.cssText = config.content;
+            } else {
+                style.innerHTML = config.content;
+            }
+
+            head.appendChild(style);
+            callback();
+        }
+        else if (config.url) {
+            if (cssMap[config.url]) return ;
+
+            cssMap[config.url] = true;
+            
+            var link  = document.createElement('link');
+
+            link.onload = function() {
+                callback();
+            };
+
+            link.href = config.url;
+            link.rel  = 'stylesheet';
+            link.type = 'text/css';
+            head.appendChild(link);
+        }
+    };
+
+    /**
+     * 请求超时时间，单位毫秒
+     */ 
 
     require.timeout = 5000;
     
     /**
-     * require.async 方法别名
-     */ 
-
-    require.load = require.async;
-    
-    /**
-     * 模块加载器
-     */ 
-
-    require.loader = loader;
-    
-    /**
-     * CSS 样式文件加载方法
+     * 是否将模块存储为本地存储
      */
 
-    require.loadCSS = loadCSS;
-    
-    /**
-     * Ajax + LocalStorage 加载方法
-     */ 
-
-    require.ajaxLoader = ajaxLoader;
-    
-    /**
-     * 加载脚本文件方法
-     */ 
-
-    require.loadScript = loadScript;
-    
-    /**
-     * 是否使用本地存储模块内容
-     */ 
-
     require.saveToLocalStorage = true;
-    
-    window.require             = require;
-    window.define              = define;
+
 })(this);

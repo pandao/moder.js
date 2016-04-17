@@ -1,0 +1,1 @@
+define("main",function(require,exports,module){var e=require("zepto"),t=require("vue/vue"),o=require("fastclick");console.log("main",e,t);e(function(){document.getElementById("layout").style.display="block";document.getElementById("loading").style.display="none";o.attach(document.body);document.getElementById("time").innerHTML=(new Date).getTime()-startTime+"ms"})});

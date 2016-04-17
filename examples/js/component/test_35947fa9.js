@@ -1,0 +1,1 @@
+define("component/test",function(require,exports,module){module.exports={template:"<p>Test</p>"}});

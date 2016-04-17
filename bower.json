@@ -1,7 +1,7 @@
 {
   "name": "moder.js",
-  "description": "Front-end AMD/CMD/CommonJS Module (locale) Loader.",
-  "main": "index.js",
+  "description": "Front-end Module (locale) Loader.",
+  "main": "dist/moder.js",
   "authors": [
     "Pandao"
   ],
@@ -23,6 +23,7 @@
   "ignore": [
     "**/.*",
     "node_modules",
+    "examples",
     "bower_components",
     "src",
     "test",

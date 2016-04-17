@@ -1,4 +1,4 @@
-define('self/1.js', function(require, exports, module){
+define('self/1', function(require, exports, module){
 //------------------------------------------------------------
 
 module.exports = {
@@ -8,7 +8,7 @@ module.exports = {
 	val: 123
 };
 
-var mod = require('self/1.js');
+var mod = require('self/1');
 
 //------------------------------------------------------------
 });

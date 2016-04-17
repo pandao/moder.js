@@ -1,7 +1,7 @@
 {
   "name": "moder.js",
-  "version": "0.1.0",
-  "description": "Front-end AMD/CMD/CommonJS Module (locale) Loader. ",
+  "version": "0.2.0",
+  "description": "Front-end Module (locale) Loader. ",
   "main": "index.js",
   "directories": {
     "test": "tests"

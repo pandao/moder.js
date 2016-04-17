@@ -1,4 +1,4 @@
-define('cross/2.js', function(require, exports, module){
+define('cross/2', function(require, exports, module){
 //------------------------------------------------------------
 
 exports.num = function() {
@@ -8,8 +8,8 @@ exports.num = function() {
 exports.val = 200;
 
 
-var m1 = require('cross/1.js');
-var m3 = require('cross/3.js');
+var m1 = require('cross/1');
+var m3 = require('cross/3');
 
 //------------------------------------------------------------
 });

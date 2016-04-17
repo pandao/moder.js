@@ -1,16 +1,15 @@
 # moder.js
 
-Front-end AMD/CMD/CommonJS Module (locale) Loader. 
+Front-end Module (locale) Loader. 
 
-前端（AMD/CMD/CommonJS）（本地）模块加载解决方案
+前端模块（本地）加载解决方案
 
 ### 简介
 
-- 基于 [https://github.com/fex-team/mod](https://github.com/fex-team/mod) 改造；
-- 通过结合 Ajax + LocalStorage 本地存储避免重复请求模块资源；
+- 精简版的 AMD / CMD 规范，并不完全遵守 AMD / CMD规范；
+- 通过 Ajax + LocalStorage 本地存储避免重复请求模块资源，提高响应速度和交互体验；
 - 配合 Gulp 插件 [gulp-moder](https://github.com/pandao/gulp-moder) 实现自动生成模块 Map，避免引入整个 [Fis](https://github.com/fex-team/fis) 架构；
 - 支持模块包和加载 CSS 模块文件；
-- 特别适用于移动端项目；
 
 ### 安装
 
@@ -92,16 +91,25 @@ define("模块名", function(require, exports, module){
 require.saveToLocalStorage = false; // 默认为 true
 ```
 
-> **本地存储后如何动态更新？**
-> 只要模块文件的 URL 有变动，就会自动更新本地存储。所以每个模块都要定义 URL。
+4、本地存储后如何动态更新？
+
+    // 只要模块文件的 URL 有变动，就会自动更新本地存储，所以每个模块都要定义 URL。
+    
+    '模块名': {
+        url : '模块文件地址', // 必须定义 URL，跨域请求需要服务器支持配置
+        deps:  ['依赖模块1', '依赖模块2', ...]
+    }
 
 ### 辅助构建工具
 
 Gulp 插件 [gulp-moder](https://github.com/pandao/gulp-moder)
 
-### 参考项目
+### 参考项目及感谢
 
-感谢 [https://github.com/fex-team/mod](https://github.com/fex-team/mod) 项目的工作。
+- [https://github.com/fex-team/mod](https://github.com/fex-team/mod) 
+- [https://github.com/xiangshouding/mod-store.js](https://github.com/xiangshouding/mod-store.js)
+
+> 基于以上项目改造，感谢以上项目的工作。
 
 ### Changes
 
@@ -110,3 +118,5 @@ Gulp 插件 [gulp-moder](https://github.com/pandao/gulp-moder)
 ### License
 
 The [MIT](https://github.com/pandao/moder.js/blob/master/LICENSE) License.
+
+Copyright (C) 2016 Pandao

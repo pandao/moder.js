@@ -1,7 +1,7 @@
-define('single/engine.js',function(require, exports, module){
+define('single/engine',function(require, exports, module){
 //------------------------------------------------------------
 
-var car = require('single/car.js');
+var car = require('single/car');
 
 exports.start = function(speed) {
     return speed;

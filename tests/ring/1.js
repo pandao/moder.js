@@ -1,4 +1,4 @@
-define('ring/1.js', function(require, exports, module){
+define('ring/1', function(require, exports, module){
 //------------------------------------------------------------
 
 exports.test = function(i) {
@@ -8,7 +8,7 @@ exports.test = function(i) {
     	return c2.test(i-1);
 };
 
-var c2 = require('ring/2.js');
+var c2 = require('ring/2');
 
 //------------------------------------------------------------
 });

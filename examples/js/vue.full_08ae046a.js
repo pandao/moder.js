@@ -1,0 +1,1 @@
+define("vue.full",function(require,exports,module){var e=require("vue/vue"),u=require("vue/router"),o=require("vue/resource"),v=require("vue/component.robot"),r=require("hammer"),t=require("vue/touch"),s=require("vue/validator");e.use(t);e.use(u);e.use(s);e.use(v);module.exports=e});

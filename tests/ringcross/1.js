@@ -1,4 +1,4 @@
-define('ringcross/1.js', function(require, exports, module){
+define('ringcross/1', function(require, exports, module){
 //------------------------------------------------------------
 
 exports.test = function() {
@@ -7,9 +7,9 @@ exports.test = function() {
 
 exports.val = 100;
 
-var m1 = require('ringcross/1.js');
-var m2 = require('ringcross/2.js');
-var m3 = require('ringcross/3.js');
+var m1 = require('ringcross/1');
+var m2 = require('ringcross/2');
+var m3 = require('ringcross/3');
 
 //------------------------------------------------------------
 });

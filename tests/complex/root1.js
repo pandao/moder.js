@@ -1,6 +1,6 @@
-define('complex/root1.js', function(require, exports, module){
-	var root1_1 = require('complex/root1-1.js');
-	var rootCommon = require('complex/root1-common.js');
+define('complex/root1', function(require, exports, module){
+	var root1_1 = require('complex/root1-1');
+	var rootCommon = require('complex/root1-common');
 
 	module.exports = {
 		'rootCommon': rootCommon,
