@@ -118,7 +118,7 @@
             // 本地存储模块名 ID 的前缀，为了避免同名 Key 造成数据不对称
             // 慎用或不随意变动，如果有变动，必须执行 localStorage.clear() 方法，
             // 否则会造成旧模块 ID Key 占用额外本地存储空间，无法同步更新
-            //require.localPrefix = 'moder.js:';
+            require.localPrefix = 'mod:';
             
             require.map(moduleMap);
             

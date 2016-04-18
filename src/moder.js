@@ -77,13 +77,14 @@ var require, define;
         if (url in scriptsMap) return ;
 
         var content,
-            store = localStorage;
+            store        = localStorage,
+            _localPrefix = require.localPrefix;
         
         scriptsMap[url] = true;
 
         if ((content = store.getItem(url))) {
-            if (!store.getItem(localPrefix + id)) {
-                store.setItem(localPrefix + id, url);
+            if (!store.getItem(_localPrefix + id)) {
+                store.setItem(_localPrefix + id, url);
             }
 
             callback(content);
@@ -102,7 +103,7 @@ var require, define;
                         content = xhr.responseText;
                         
                         store.setItem(url, content);
-                        store.setItem(localPrefix + id, url);
+                        store.setItem(_localPrefix + id, url);
 
                         callback(content);
                     } else {
@@ -246,7 +247,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.1'
+        version : '0.2.2'
     };
     
     /**
