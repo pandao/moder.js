@@ -1,12 +1,12 @@
 /*
- * moder.js v0.2.2
+ * moder.js v0.2.3
  *
  * @file        moder.js 
  * @description Front-end Module (locale) Loader. 
  * @license     MIT License
  * @author      Pandao
  * {@link       https://github.com/pandao/moder.js}
- * @updateTime  2016-04-18
+ * @updateTime  2016-04-19
  */
 
 var require, define;
@@ -89,13 +89,13 @@ var require, define;
 
         var content,
             store        = localStorage,
-            _localPrefix = require.localPrefix;
+            localId      = require.localPrefix + id;
         
         scriptsMap[url] = true;
 
         if ((content = store.getItem(url))) {
-            if (!store.getItem(_localPrefix + id)) {
-                store.setItem(_localPrefix + id, url);
+            if (!store.getItem(localId)) {
+                store.setItem(localId, url);
             }
 
             callback(content);
@@ -105,7 +105,7 @@ var require, define;
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 ) {
                     if (xhr.status === 200) {
-                        var oldUrl = store.getItem(id);
+                        var oldUrl = store.getItem(localId);
 
                         if (oldUrl) {
                             store.removeItem(oldUrl);
@@ -114,7 +114,7 @@ var require, define;
                         content = xhr.responseText;
                         
                         store.setItem(url, content);
-                        store.setItem(_localPrefix + id, url);
+                        store.setItem(localId, url);
 
                         callback(content);
                     } else {
@@ -258,7 +258,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.2'
+        version : '0.2.3'
     };
     
     /**
