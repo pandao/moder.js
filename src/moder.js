@@ -247,7 +247,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.3'
+        version : '0.2.4'
     };
     
     /**
@@ -432,6 +432,33 @@ var require, define;
             link.type = 'text/css';
             head.appendChild(link);
         }
+    };
+    
+    /**
+     * 本地存储模块 Map 的 Key
+     */
+
+    require.mapVersionKey = "module_map_version";
+    
+    /**
+     * 存储模块 Map 的版本号，用于判断并及时更新本地存储
+     * 
+     * @param  {String|Int}  version  本地存储模块 Map 的版本
+     * @return {Void}        void     无返回值
+     */
+
+    require.setMapVersion = function(version) {
+        localStorage.setItem(require.localPrefix + require.mapVersionKey, version);
+    };
+    
+    /**
+     * 获取模块 Map 的版本号
+     * 
+     * @return {String}      version  返回本地存储的模块 Map 版本号
+     */
+
+    require.getMapVersion = function() {
+        return localStorage.getItem(require.localPrefix + require.mapVersionKey);
     };
 
     /**

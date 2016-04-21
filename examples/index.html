@@ -120,6 +120,9 @@
             // 否则会造成旧模块 ID Key 占用额外本地存储空间，无法同步更新
             require.localPrefix = 'mod:';
             
+            // 本地存储模块 Map 的版本，用于判断并及时更新本地存储
+            require.setMapVersion("20160421");
+            
             require.map(moduleMap);
             
             // 加载 CSS 模块

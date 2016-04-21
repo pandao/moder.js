@@ -1,6 +1,6 @@
 {
   "name": "moder.js",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Front-end Module (locale) Loader. ",
   "main": "index.js",
   "directories": {

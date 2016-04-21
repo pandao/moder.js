@@ -26,3 +26,9 @@
 ### v0.2.3
 
 - 修复模块文件 URL 更新后，本地存储无法同步更新的问题；
+
+### v0.2.4
+
+- 新增配置属性 `mapVersionKey`，用于设置本地存储模块 Map 版本的 key；
+- 新增方法 `setMapVersion(String|Int version)`，用于将模块 Map 版本号存储在本地；
+- 新增方法 `getMapVersion()`，用于从本地获取模块 Map 的版本号；

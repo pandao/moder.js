@@ -103,6 +103,15 @@ require.saveToLocalStorage = false; // 默认为 true
 require.localPrefix = 'xxx';  // 默认为空
 ```
 
+存储和获取模块 Map 的版本，用于判断并及时更新本地存储：
+
+> 有新版本时，只要刷新页面即可。
+
+```javascript
+require.setMapVersion(String|Int version); // 存储版本号
+require.getMapVersion();                   // 获取版本号
+```
+
 4、本地存储后如何动态更新？
 
 ```javascript
