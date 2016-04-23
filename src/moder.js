@@ -112,7 +112,7 @@ var require, define;
                 }
             };
 
-            xhr.open("get", url);
+            xhr.open("get", require.baseUrl + url);
             xhr.send(null);
         }
     }
@@ -158,7 +158,7 @@ var require, define;
         }
         
         script.type = 'text/javascript';
-        script.src  = url;
+        script.src  = require.baseUrl + url;
         head.appendChild(script);
 
         return script;
@@ -247,7 +247,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.4'
+        version : '0.2.5'
     };
     
     /**
@@ -478,5 +478,13 @@ var require, define;
      */
 
     require.localPrefix = localPrefix;
+    
+    /**
+     * 资源 URL 基本路径
+     * 
+     * 主要用于避免存储过长的 URL
+     */ 
+    
+    require.baseUrl = "";
 
 })(this);

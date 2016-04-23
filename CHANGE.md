@@ -32,3 +32,7 @@
 - 新增配置属性 `mapVersionKey`，用于设置本地存储模块 Map 版本的 key；
 - 新增方法 `setMapVersion(String|Int version)`，用于将模块 Map 版本号存储在本地；
 - 新增方法 `getMapVersion()`，用于从本地获取模块 Map 的版本号；
+
+### v0.2.5
+
+- 新增配置属性 `baseUrl`，用于设定 Ajax 请求模块资源的基本路径，避免存储过长的 URL；

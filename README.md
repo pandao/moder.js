@@ -112,6 +112,12 @@ require.setMapVersion(String|Int version); // 存储版本号
 require.getMapVersion();                   // 获取版本号
 ```
 
+模块资源（Ajax）请求基本路径：
+
+```javascript
+require.baseUrl = 'xxxx'; // 可以避免存储过长的 URL
+```
+
 4、本地存储后如何动态更新？
 
 ```javascript
