@@ -129,6 +129,12 @@ require.baseUrl = 'xxxx'; // 可以避免存储过长的 URL
 }
 ```
 
+5、清空本地存储的模块 Map
+
+```javascript
+require.clear(); // 别名 require.clearLocalStorage
+```
+
 ### 辅助构建工具
 
 Gulp 插件 [gulp-moder](https://github.com/pandao/gulp-moder)

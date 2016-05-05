@@ -50,7 +50,8 @@ var require, define;
         return /\.css$/.test(url);
     }
 
-    var cssMap      = {},
+    var _map        = {},
+        cssMap      = {},
         resMap      = {},
         pkgMap      = {},
         loadingMap  = {},
@@ -247,7 +248,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.5'
+        version : '0.2.6'
     };
     
     /**
@@ -364,6 +365,8 @@ var require, define;
 
     require.map = function(obj) {
         var key, col;
+        
+        _map = obj;
 
         col = obj.res;
 
@@ -459,6 +462,26 @@ var require, define;
 
     require.getMapVersion = function() {
         return localStorage.getItem(require.localPrefix + require.mapVersionKey);
+    };
+    
+    /**
+     * 清空本地存储的模块
+     * 
+     * 注：不会清除 Map version
+     * 
+     * @return {Void}   void   无返回值
+     */
+
+    require.clear = require.clearLocalStorage = function() {
+        for (var i in _map) {
+            for (var m in _map[i]) {
+                var name = require.localPrefix + m;
+                var fileKey = localStorage.getItem(name);
+
+                localStorage.removeItem(name);
+                localStorage.removeItem(fileKey);
+            }
+        }
     };
 
     /**

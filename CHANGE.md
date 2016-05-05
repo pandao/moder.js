@@ -36,3 +36,7 @@
 ### v0.2.5
 
 - 新增配置属性 `baseUrl`，用于设定 Ajax 请求模块资源的基本路径，避免存储过长的 URL；
+
+### v0.2.6
+
+- 新增：清空本地存储的模块 Map 的方法 `require.clear()`，别名 `require.clearLocalStorage()`；
