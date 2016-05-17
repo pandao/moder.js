@@ -40,3 +40,7 @@
 ### v0.2.6
 
 - 新增：清空本地存储的模块 Map 的方法 `require.clear()`，别名 `require.clearLocalStorage()`；
+
+### v0.2.7
+
+- 更新：新增判断是否支持 `localStorage`，确实有部分机型是不支持的；

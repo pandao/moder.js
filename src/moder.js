@@ -83,7 +83,7 @@ var require, define;
         
         scriptsMap[url] = true;
 
-        if ((content = store.getItem(url))) {
+        if (store && (content = store.getItem(url))) {
             if (!store.getItem(localId)) {
                 store.setItem(localId, url);
             }
@@ -95,16 +95,18 @@ var require, define;
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 ) {
                     if (xhr.status === 200) {
-                        var oldUrl = store.getItem(localId);
-
-                        if (oldUrl) {
-                            store.removeItem(oldUrl);
-                        }
-                        
                         content = xhr.responseText;
                         
-                        store.setItem(url, content);
-                        store.setItem(localId, url);
+                        if (store) {
+                            var oldUrl = store.getItem(localId);
+
+                            if (oldUrl) {
+                                store.removeItem(oldUrl);
+                            }
+                            
+                            store.setItem(url, content);
+                            store.setItem(localId, url);
+                        }
 
                         callback(content);
                     } else {
@@ -248,7 +250,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.6'
+        version : '0.2.7'
     };
     
     /**
