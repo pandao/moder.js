@@ -44,3 +44,7 @@
 ### v0.2.7
 
 - 更新：新增判断是否支持 `localStorage`，确实有部分机型是不支持的；
+
+### v0.2.8
+
+- 修复：因为 WebView 不支持 `localStorage` API 而导致的问题；

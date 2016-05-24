@@ -250,7 +250,7 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.7'
+        version : '0.2.8'
     };
     
     /**
@@ -453,6 +453,8 @@ var require, define;
      */
 
     require.setMapVersion = function(version) {
+        if (!localStorage) return false;
+
         localStorage.setItem(require.localPrefix + require.mapVersionKey, version);
     };
     
@@ -463,6 +465,8 @@ var require, define;
      */
 
     require.getMapVersion = function() {
+        if (!localStorage) return false;
+
         return localStorage.getItem(require.localPrefix + require.mapVersionKey);
     };
     
@@ -475,9 +479,11 @@ var require, define;
      */
 
     require.clear = require.clearLocalStorage = function() {
+        if (!localStorage) return false;
+
         for (var i in _map) {
             for (var m in _map[i]) {
-                var name = require.localPrefix + m;
+                var name    = require.localPrefix + m;
                 var fileKey = localStorage.getItem(name);
 
                 localStorage.removeItem(name);
