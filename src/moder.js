@@ -1,5 +1,34 @@
 var require, define;
 
+// From: https://gist.github.com/Phinome/0eae8e374bb8229e94ea
+// 解决隐私模式下 localStorage 不正常问题
+;(function() {
+    if (!localStorage) {
+        return false;
+    }
+
+    var KEY = '_localStorage_', VALUE = 'test';
+
+    // 检测是否正常
+    try {
+        localStorage.setItem(KEY, VALUE);
+    } catch(e) {
+        var noop = function() {};
+
+        localStorage.__proto__ = {
+            setItem: noop,
+            getItem: noop,
+            removeItem: noop,
+            clear: noop
+        };
+    }
+
+    // 删除测试数据
+    if (localStorage.getItem(KEY) === VALUE) {
+        localStorage.removeItem(KEY);
+    }
+})();
+
 (function(global) {
     // 避免重复加载而导致已定义模块丢失
     if (window.require) {
@@ -250,9 +279,9 @@ var require, define;
 
     define.amd = {
         jQuery  : true,
-        version : '0.2.8'
+        version : '0.2.9'
     };
-    
+
     /**
      * 请求模块方法
      * 
@@ -468,6 +497,43 @@ var require, define;
         if (!localStorage) return false;
 
         return localStorage.getItem(require.localPrefix + require.mapVersionKey);
+    };
+    
+    /**
+     * 获取本地存储
+     * 
+     * @param   {String}   key    本地存储键
+     * @returns {boolean}  mixed  返回本地存储的键值
+     */
+
+    require.getItem = function(key) {
+        if (!localStorage) return false;
+        return localStorage.getItem(key);
+    };
+    
+    /**
+     * 设置本地存储d
+     * 
+     * @param   {String}   key      本地存储键
+     * @param   {String}   value    本地存储键值
+     * @return  {Void}     void     返回本地存储的键值
+     */
+
+    require.setItem = function(key, value) {
+        if (!localStorage) return false;
+        localStorage.setItem(key, value);
+    };
+    
+    /**
+     * 移除本地存储
+     * 
+     * @param   {String}   key      本地存储键
+     * @returns {boolean}  mixed    返回结果
+     */
+
+    require.removeItem = function(key) {
+        if (!localStorage) return false;
+        return localStorage.removeItem(key);
     };
     
     /**

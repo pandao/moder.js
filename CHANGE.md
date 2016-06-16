@@ -48,3 +48,8 @@
 ### v0.2.8
 
 - 修复：因为 WebView 不支持 `localStorage` API 而导致的问题；
+
+### v0.2.9
+
+- 优化：解决隐私模式下 localStorage 不正常问题；
+- 新增：操作本地存储方法 `setItem()`、`getItem()`、`removeItem()`；
